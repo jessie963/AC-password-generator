@@ -1,0 +1,119 @@
+{{!-- 表單 --}}
+<div class="w-75 m-5 mx-auto">
+  <div class="card">
+
+    <div class="card-body p-5">
+      <h4 class="card-title">Random Password Generator</h4>
+      <hr />
+      <form method="POST" action="/form-data" id="password-form" novalidate>
+        <div class="d-grid">
+          <div class="row mb-4">
+            {{!-- 標題 --}}
+            <div class="col-4">
+              Password Length
+            </div>
+
+            {{!-- 密碼長度 --}}
+            <div class="col-8">
+              {{!-- 一定要加pattern屬性，才能抓出使用者沒有輸入的錯誤 --}}
+              {{!-- 因為hbs會把value={{...}}裡路由帶過來的值視為預設值，即便是空值仍視為有值 --}}
+              <input type="number" class="form-control" id="length" name="length" min="4" max="16" step="1" value={{reqBody.length}} pattern="(\d+)" required />
+              <div class="form-text">Length is available between 4 ~ 16</div>
+              <div class="invalid-feedback">Please input a valid number between 4 ~ 16</div>
+            </div>
+          </div>
+
+          {{!-- 選取字元集: 小寫字母 --}}
+          <div class="row mb-4">
+            <div class="col-4">
+              Include Lowercase Characters
+            </div>
+            <div class="col-8">
+              <input type="checkbox" class="form-check-input" id="lowercase_checkbox" name="charSets" value="lowercase"
+                {{#if (includeCharSet reqBody.charSets 'lowercase')}}checked{{/if}} />
+              <label class="form-check-label" for="lowercase_checkbox">(e.g. abcdefg)</label>
+            </div>
+          </div>
+
+          {{!-- 選取字元集: 大寫字母 --}}
+          <div class="row mb-4">
+            <div class="col-4">
+              Include Uppercase Characters
+            </div>
+            <div class="col-8">
+              <input type="checkbox" class="form-check-input" id="uppercase_checkbox" name="charSets" value="uppercase"
+                {{#if (includeCharSet reqBody.charSets 'uppercase' )}}checked{{/if}} />
+              <label class="form-check-label" for="uppercase_checkbox">(e.g. ABCDEFG)</label>
+            </div>
+          </div>
+
+          {{!-- 選取字元集: 數字 --}}
+          <div class="row mb-4">
+            <div class="col-4">
+              Include Numbers
+            </div>
+            <div class="col-8">
+              <input type="checkbox" class="form-check-input" id="number_checkbox" name="charSets" value="number" 
+                {{#if (includeCharSet reqBody.charSets 'number' )}}checked{{/if}} />
+              <label class="form-check-label" for="number_checkbox">(e.g. 123456)</label>
+            </div>
+          </div>
+
+          {{!-- 選取字元集: 符號 --}}
+          <div class="row mb-4">
+            <div class="col-4">
+              Include Symbols
+            </div>
+            <div class="col-8">
+              <input type="checkbox" class="form-check-input" id="symbol_checkbox" name="charSets" value="symbol"
+                {{#if (includeCharSet reqBody.charSets 'symbol' )}}checked{{/if}} />
+              <label class="form-check-label" for="symbol_checkbox">(e.g. @#$%)</label>
+            </div>
+          </div>
+
+          {{!-- 排除字元 --}}
+          <div class="row mb-4">
+            <div class="col-4">
+              Exclude Characters
+            </div>
+            <div class="col-8">
+              {{!-- 如果最後面加上斜線（<input ... />）會出現bug（ / 會顯示在輸入框裡） --}}
+              <input type="text" class="form-control" id="exclude_char" name="excludedChar" value={{reqBody.excludedChar}} >
+              <div class="form-text">These characters will not appear in the password</div>
+            </div>
+          </div>
+
+          {{!-- 顯示密碼 --}}
+          <div class="result-panel {{resultDisplayState}}">
+            <div class="bg-info-subtle my-2 p-3">
+              <span class="text-success me-2">{{resultType}}:</span>
+              <span class="text-danger">{{result}}</span>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-success mt-2">Generate Password</button>
+      </form>
+    </div>
+
+      <div class="card-footer">
+        <div class="text-end">
+          Idea is inspired by <span class="text-primary">Strong Random Password</span>
+        </div>
+      </div>
+
+  </div>
+</div>
+
+<script>
+  // 表單驗證 (validation.css)
+  const form = document.querySelector('#password-form');
+
+  form.addEventListener('submit', (event) => {
+    form.classList.add('validated');
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  });
+</script>

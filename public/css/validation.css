@@ -1,0 +1,15 @@
+.invalid-feedback {
+  display: none;
+}
+
+form.validated input:invalid {
+  border: 1px solid red;
+}
+
+form.validated input:invalid ~ .form-text {
+  display: none;
+}
+
+form.validated input:invalid ~ .invalid-feedback {
+  display: block;
+}
